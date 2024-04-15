@@ -9,6 +9,10 @@ class TestDataProcessor(unittest.TestCase):
     self.INPUT_DATA
     e.g.:  data_procesor = DataProcessor(self.INPUT_DATA)
     """
+    INPUT_DATA = [
+        {"Transaction ID": "1", "Account number": "1001", "Date": "2023-03-01", "Transaction type": "deposit", "Amount": "1000", "Currency": "CAD", "Description": "Salary"}, 
+        {"Transaction ID": "2", "Account number": "1002", "Date": "2023-03-01", "Transaction type": "deposit", "Amount": "1500", "Currency": "CAD", "Description": "Salary"}
+    ]
     def setUp(self):
         # Set up the DataProcessor with empty initial data to emphasize the effects of deposit and withdrawal
         self.data_processor = DataProcessor([])
@@ -22,7 +26,7 @@ class TestDataProcessor(unittest.TestCase):
         # Check that the balance and total deposits are correctly updated
         expected_balance = 500
         expected_total_deposits = 500
-        account_summary = self.data_processor.account_summaries["1001"]
+        account_summary = self.data_processor.account_summaries[deposit_transaction["Account number"]]
         #Assert
         self.assertEqual(expected_balance, account_summary["balance"])
         self.assertEqual(expected_total_deposits, account_summary["total_deposits"])
@@ -37,7 +41,7 @@ class TestDataProcessor(unittest.TestCase):
         expected_balance = -300 # Expected balance for account 1001 after withdrawal
         expected_total_withdrawals = 300  # Expected total withdrawals for account 1001 after withdrawal
         # Assert for account 1001 after withdrawal
-        account_summary = self.data_processor.account_summaries["1002"]
+        account_summary = self.data_processor.account_summaries[withdrawal_transaction["Account number"]]
         self.assertEqual(expected_balance,account_summary["balance"])
         self.assertEqual(expected_total_withdrawals, account_summary["total_withdrawals"])
     #check_suspicious_transactions: Test to verify that a transaction amount considered 'large' is written to the suspicious_transactions list.
