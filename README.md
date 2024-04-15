@@ -10,7 +10,7 @@ Group Financial Data Processing assignment.
 # Milestone 1
 ## Developer 1 Tasks (Issue 1):
 ## Developer 2 Tasks (Issue 2):
-## Developer 3 Tasks (Issue 3):
+## Developer 3 Tasks (Issue 3): Added Documentation and Tests for OutputHandler class
 
 # Milestone 2
 ## Developer 1 Tasks (Issue 4):
