@@ -1,57 +1,86 @@
+
+import logging
 class DataProcessor:
     """
-    REQUIRED: CLASS DOCSTRING
+    A class for processing transactional data to identify suspicious transactions,
+    summarize account activities, and compute transaction statistics.
+    Attributes:
+    __input_data (list): A list of transaction dictionaries.
+    __account_summaries (dict): A dictionary mapping account numbers to their summaries.
+    __suspicious_transactions (list): A list of transactions that are deemed suspicious.
+    __transaction_statistics (dict): A dictionary summarizing transaction statistics.
+
+    Constants:
+    LARGE_TRANSACTION_THRESHOLD (int): Threshold amount above which transactions are considered large.
+    UNCOMMON_CURRENCIES (list): List of currency codes considered uncommon.
     """
 
     LARGE_TRANSACTION_THRESHOLD = 10000
     UNCOMMON_CURRENCIES = ['XRP', 'LTC']
 
-    def __init__(self, input_data: list):
+    def __init__(self, input_data: list, log_level = logging.WARNING, log_format = None, log_file=None):
         """
-        REQUIRED: METHOD DOCSTRING
+        Initializes the DataProcessor with the given input data.
+        Parameters:
+        input_data (list): A list of transaction dictionaries.
+        log_level (int): Logging level.
+        log_format (str): Format of the log messages.
+        log_file (str): File path for logging output. Logs to console if not specified.
         """
         self.__input_data = input_data
         self.__account_summaries = {}
         self.__suspicious_transactions = []
         self.__transaction_statistics = {}
+        # Default log format if none provided
+        if not log_format:
+            log_format = '%(asctime)s - %(levelname)s - %(message)s'
+       # Configure logging
+        if log_file:
+            logging.basicConfig(filename=log_file, level=log_level, format=log_format)
+        else:
+            logging.basicConfig(level=log_level, format=log_format) 
 
     @property
     def input_data(self):
         """
-        REQUIRED: METHOD DOCSTRING
+        list: Returns the input transaction data.
         """
         return self.__input_data
     
     @property
     def account_summaries(self):
         """
-        REQUIRED: METHOD DOCSTRING
+        dict: Returns a dictionary of account summaries.
         """
         return self.__account_summaries
     
     @property
     def suspicious_transactions(self):
         """
-        REQUIRED: METHOD DOCSTRING
+        list: Returns a list of suspicious transactions.
         """
         return self.__suspicious_transactions
     
     @property
     def transaction_statistics(self):
         """
-        REQUIRED: METHOD DOCSTRING
+        dict: Returns transaction statistics.
         """
         return self.__transaction_statistics
 
 
     def process_data(self) -> dict:
         """
-        REQUIRED: METHOD DOCSTRING
+        Processes the input data to update account summaries, check for suspicious transactions,
+        and update transaction statistics.
+        Returns:
+        dict: A dictionary containing the account summaries, suspicious transactions, and transaction statistics.
         """
         for row in self.__input_data:
             self.update_account_summary(row)
             self.check_suspicious_transactions(row)
             self.update_transaction_statistics(row)
+        logging.info("Data Processing Complete")
 
         return {
             "account_summaries": self.__account_summaries,
@@ -61,12 +90,15 @@ class DataProcessor:
 
     def update_account_summary(self, row: dict) -> None:
         """
-        REQUIRED: METHOD DOCSTRING
+        Updates the summary information for an account based on a single transaction.
+        Parameters:
+        row (dict): A dictionary representing a single transaction.
+        Updates and logs changes to account summaries.
         """
         account_number = row['Account number']
         transaction_type = row['Transaction type']
         amount = float(row['Amount'])
-
+        # Initialize account summary if not already present
         if account_number not in self.__account_summaries:
             self.__account_summaries[account_number] = {
                 "account_number": account_number,
@@ -74,50 +106,63 @@ class DataProcessor:
                 "total_deposits": 0,
                 "total_withdrawals": 0
             }
-
+        # Update account balance and totals based on transaction type    
         if transaction_type == "deposit":
             self.__account_summaries[account_number]["balance"] += amount
             self.__account_summaries[account_number]["total_deposits"] += amount
         elif transaction_type == "withdrawal":
             self.__account_summaries[account_number]["balance"] -= amount
             self.__account_summaries[account_number]["total_withdrawals"] += amount
-
+        logging.info(f"Account summary updated: {account_number}")
+    # A transaction is suspicious if above a threshold
     def check_suspicious_transactions(self, row: dict) -> None:
         """
-        REQUIRED: METHOD DOCSTRING
+        Checks if a transaction is suspicious and adds it to the list of suspicious transactions if so.
+        Parameters:
+        row (dict): A dictionary representing a single transaction.
         """
         amount = float(row['Amount'])
         currency = row['Currency']
 
         if amount > self.LARGE_TRANSACTION_THRESHOLD or currency in self.UNCOMMON_CURRENCIES:
             self.__suspicious_transactions.append(row)
-
+            logging.warning(f"Suspicious transaction: {row}")
+    # A transaction is suspicious if in uncommon currencies
     def update_transaction_statistics(self, row: dict) -> None:
         """
-        REQUIRED: METHOD DOCSTRING
+        Updates statistics for a given transaction type.
+        Parameters:
+        row (dict): A dictionary representing a single transaction.
         """
         transaction_type = row['Transaction type']
         amount = float(row['Amount'])
-
+        # Initialize transaction type statistics if not already present
         if transaction_type not in self.__transaction_statistics:
             self.__transaction_statistics[transaction_type] = {
                 "total_amount": 0,
                 "transaction_count": 0
             }
-
+        # Update total amount and transaction count for the type
         self.__transaction_statistics[transaction_type]["total_amount"] += amount
         self.__transaction_statistics[transaction_type]["transaction_count"] += 1
-
+        logging.info(f"Updated transaction statistics for: {transaction_type}")
+    
     def get_average_transaction_amount(self, transaction_type: str) -> float:
         """
-        REQUIRED: METHOD DOCSTRING
+        Calculates the average amount for a given transaction type.
+
+        Parameters:
+        transaction_type (str): The type of transaction to calculate the average amount for.
+
+        Returns:
+        float: The average transaction amount for the specified type.
         """
         total_amount = self.__transaction_statistics[transaction_type]["total_amount"]
         transaction_count = self.__transaction_statistics[transaction_type]["transaction_count"]
-
+        # Calculate average; avoid division by zero
         if transaction_count == 0:
             average = 0
         else:
             average = total_amount / transaction_count
-        
+       
         return average
