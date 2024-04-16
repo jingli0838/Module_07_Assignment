@@ -24,7 +24,7 @@ def main() -> None:
     input_data = input_handler.read_input_data()
 
      # Specify the log file path and the logging level.
-    log_file_path = os.path.join(current_dir, 'logs\\fdp_team_#.log')  # Replace # with your group number
+    log_file_path = os.path.join(current_dir, 'logs\\fdp_team_3.log')  
     data_processor = DataProcessor(input_data)
     
     processed_data = data_processor.process_data()
