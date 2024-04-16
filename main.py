@@ -1,4 +1,5 @@
 import os
+import logging
 
 from input_handler.input_handler import InputHandler
 from data_processor.data_processor import DataProcessor
@@ -22,7 +23,10 @@ def main() -> None:
     input_handler = InputHandler(input_file_path)
     input_data = input_handler.read_input_data()
 
+     # Specify the log file path and the logging level.
+    log_file_path = os.path.join(current_dir, 'logs\\fdp_team_#.log')  # Replace # with your group number
     data_processor = DataProcessor(input_data)
+    
     processed_data = data_processor.process_data()
 
     output_file_prefix = 'output_data'

@@ -129,7 +129,7 @@ class TestDataProcessor(unittest.TestCase):
         self.assertEqual(expected_average_deposit, average_deposit)
         self.assertEqual(expected_average_withdrawal, average_withdrawal)
         # New test to verify logging behavior
-    def test_process_data_logs_info222(self):
+    def test_process_data_logs_info(self):
         # Prepare the input data for this specific test
         test_input_data = [
             {"Transaction ID": "1", "Account number": "1001", "Date": "2023-03-01", 
