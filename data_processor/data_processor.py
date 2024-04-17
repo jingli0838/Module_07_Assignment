@@ -1,3 +1,5 @@
+
+import logging
 class DataProcessor:
     """
     A class for processing transactional data to identify suspicious transactions,
@@ -16,16 +18,27 @@ class DataProcessor:
     LARGE_TRANSACTION_THRESHOLD = 10000
     UNCOMMON_CURRENCIES = ['XRP', 'LTC']
 
-    def __init__(self, input_data: list):
+    def __init__(self, input_data: list, log_level = logging.WARNING, log_format = None, log_file=None):
         """
         Initializes the DataProcessor with the given input data.
         Parameters:
         input_data (list): A list of transaction dictionaries.
+        log_level (int): Logging level.
+        log_format (str): Format of the log messages.
+        log_file (str): File path for logging output. Logs to console if not specified.
         """
         self.__input_data = input_data
         self.__account_summaries = {}
         self.__suspicious_transactions = []
         self.__transaction_statistics = {}
+        # Default log format if none provided
+        if not log_format:
+            log_format = '%(asctime)s - %(levelname)s - %(message)s'
+       # Configure logging
+        if log_file:
+            logging.basicConfig(filename=log_file, level=log_level, format=log_format)
+        else:
+            logging.basicConfig(level=log_level, format=log_format) 
 
     @property
     def input_data(self):
@@ -67,6 +80,7 @@ class DataProcessor:
             self.update_account_summary(row)
             self.check_suspicious_transactions(row)
             self.update_transaction_statistics(row)
+        logging.info("Data Processing Complete")
 
         return {
             "account_summaries": self.__account_summaries,
@@ -79,6 +93,7 @@ class DataProcessor:
         Updates the summary information for an account based on a single transaction.
         Parameters:
         row (dict): A dictionary representing a single transaction.
+        Updates and logs changes to account summaries.
         """
         account_number = row['Account number']
         transaction_type = row['Transaction type']
@@ -98,7 +113,8 @@ class DataProcessor:
         elif transaction_type == "withdrawal":
             self.__account_summaries[account_number]["balance"] -= amount
             self.__account_summaries[account_number]["total_withdrawals"] += amount
-
+        logging.info(f"Account summary updated: {account_number}")
+    # A transaction is suspicious if above a threshold
     def check_suspicious_transactions(self, row: dict) -> None:
         """
         Checks if a transaction is suspicious and adds it to the list of suspicious transactions if so.
@@ -110,7 +126,8 @@ class DataProcessor:
 
         if amount > self.LARGE_TRANSACTION_THRESHOLD or currency in self.UNCOMMON_CURRENCIES:
             self.__suspicious_transactions.append(row)
-        # A transaction is suspicious if above a threshold or in uncommon currencies
+            logging.warning(f"Suspicious transaction: {row}")
+    # A transaction is suspicious if in uncommon currencies
     def update_transaction_statistics(self, row: dict) -> None:
         """
         Updates statistics for a given transaction type.
@@ -128,7 +145,8 @@ class DataProcessor:
         # Update total amount and transaction count for the type
         self.__transaction_statistics[transaction_type]["total_amount"] += amount
         self.__transaction_statistics[transaction_type]["transaction_count"] += 1
-        
+        logging.info(f"Updated transaction statistics for: {transaction_type}")
+    
     def get_average_transaction_amount(self, transaction_type: str) -> float:
         """
         Calculates the average amount for a given transaction type.
@@ -146,5 +164,5 @@ class DataProcessor:
             average = 0
         else:
             average = total_amount / transaction_count
-        
+       
         return average

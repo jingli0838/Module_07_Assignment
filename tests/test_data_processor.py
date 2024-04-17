@@ -1,6 +1,7 @@
 import unittest
 # from unittest import TestCase
 from data_processor.data_processor import DataProcessor
+import logging
 
 class TestDataProcessor(unittest.TestCase):
     """The following constant has been provided to reduce the amount of 
@@ -126,6 +127,28 @@ class TestDataProcessor(unittest.TestCase):
         #Assert
         self.assertEqual(expected_average_deposit, average_deposit)
         self.assertEqual(expected_average_withdrawal, average_withdrawal)
+
+        # New test to verify logging behavior
+    def test_process_data_logs_info(self):
+        # Prepare the input data for this specific test
+        test_input_data = [
+            {"Transaction ID": "1", "Account number": "1001", "Date": "2023-03-01", 
+             "Transaction type": "deposit", "Amount": "20000", "Currency": "CAD", 
+             "Description": "High Value Deposit"},
+            {"Transaction ID": "2", "Account number": "1002", "Date": "2023-03-01",
+             "Transaction type": "withdrawal", "Amount": "5000", "Currency": "XRP",
+             "Description": "Crypto Withdrawal"}
+        ]
+        # Assign the test data to the data processor
+        self.data_processor._DataProcessor__input_data = test_input_data
+        # Use assertLogs to capture log entries at the INFO level
+        with self.assertLogs(level='INFO') as log:
+            self.data_processor.process_data()
+        # Verify that "Data Processing Complete" is logged
+        self.assertTrue(any("Data Processing Complete" in message for message in log.output),
+                        "Data Processing Complete message not found in logs.") 
+        
+
 if __name__ == "__main__":
     unittest.main()
 
