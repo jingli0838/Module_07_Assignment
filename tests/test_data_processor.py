@@ -17,7 +17,6 @@ class TestDataProcessor(unittest.TestCase):
     def setUp(self):
         # Set up the DataProcessor with empty initial data to emphasize the effects of deposit and withdrawal
         self.data_processor = DataProcessor([])
-
     # update_account_summary: Test to verify that the balance and total_deposits values in the account_summary dictionary are correct when a deposit row is processed.
     def test_update_account_summary_with_deposit(self): 
         #Act
@@ -128,6 +127,7 @@ class TestDataProcessor(unittest.TestCase):
         #Assert
         self.assertEqual(expected_average_deposit, average_deposit)
         self.assertEqual(expected_average_withdrawal, average_withdrawal)
+
         # New test to verify logging behavior
     def test_process_data_logs_info(self):
         # Prepare the input data for this specific test
@@ -148,6 +148,7 @@ class TestDataProcessor(unittest.TestCase):
         self.assertTrue(any("Data Processing Complete" in message for message in log.output),
                         "Data Processing Complete message not found in logs.") 
         
+
 if __name__ == "__main__":
     unittest.main()
 

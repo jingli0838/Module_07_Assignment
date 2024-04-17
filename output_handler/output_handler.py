@@ -2,14 +2,25 @@ import csv
 
 class OutputHandler:
     """
-    REQUIRED: CLASS DOCSTRING
+     A class to handle output operations such as writing account summaries, suspicious transactions, 
+    and transaction statistics to CSV files.
+
+    Attributes:
+    - account_summaries (dict): A dictionary of dictionaries containing account summaries.
+    - suspicious_transactions (list): A list of dictionaries containing suspicious transactions.
+    - transaction_statistics (dict): A dictionary of dictionaries containing transaction statistics.
     """
 
     def __init__(self, account_summaries: dict, 
                        suspicious_transactions: list, 
                        transaction_statistics: dict) -> None:
         """
-        REQUIRED: METHOD DOCSTRING
+         Initialize OutputHandler with account summaries, suspicious transactions, and transaction statistics.
+
+        Parameters:
+        - account_summaries (dict): A dictionary of dictionaries containing account summaries.
+        - suspicious_transactions (list): A list of dictionaries containing suspicious transactions.
+        - transaction_statistics (dict): A dictionary of dictionaries containing transaction statistics.
         """
         self.__account_summaries = account_summaries
         self.__suspicious_transactions = suspicious_transactions
@@ -18,27 +29,42 @@ class OutputHandler:
     @property
     def account_summaries(self):
         """
-        REQUIRED: METHOD DOCSTRING
+        Returns the account summaries.
+
+        Returns:
+        - dict: A dictionary of dictionaries containing account summaries.
         """
         return self.__account_summaries
     
     @property
     def suspicious_transactions(self):
         """
-        REQUIRED: METHOD DOCSTRING
+        Returns the suspicious transactions.
+
+        Returns:
+        - list: A list of dictionaries containing suspicious transactions.
         """
         return self.__suspicious_transactions
     
     @property
     def transaction_statistics(self):
         """
-        REQUIRED: METHOD DOCSTRING
+        Returns the transaction statistics.
+
+        Returns:
+        - dict: A dictionary of dictionaries containing transaction statistics.
         """
         return self.__transaction_statistics
 
     def write_account_summaries_to_csv(self, file_path: str) -> None:
         """
-        REQUIRED: METHOD DOCSTRING
+         Write account summaries to a CSV file.
+
+    Parameters:
+    - file_path (str): The path to the CSV file where the account summaries will be written.
+    
+    Returns:
+    - None
         """
         with open(file_path, 'w', newline='') as output_file:
             writer = csv.writer(output_file)
@@ -54,7 +80,13 @@ class OutputHandler:
 
     def write_suspicious_transactions_to_csv(self, file_path: str) -> None:
         """
-        REQUIRED: METHOD DOCSTRING
+        Write suspicious transactions to a CSV file.
+
+    Parameters:
+    - file_path (str): The path to the CSV file where the suspicious transactions will be written.
+    
+    Returns:
+    - None
         """
         with open(file_path, 'w', newline='') as output_file:
             writer = csv.writer(output_file)
@@ -73,7 +105,13 @@ class OutputHandler:
 
     def write_transaction_statistics_to_csv(self, file_path: str) -> None:
         """
-        REQUIRED: METHOD DOCSTRING
+        Write transactions statistics to a CSV file.
+
+    Parameters:
+    - file_path (str): The path to the CSV file where the transactions statistics will be written.
+    
+    Returns:
+    - None
         """        
         with open(file_path, 'w', newline='') as output_file:
             writer = csv.writer(output_file)

@@ -21,8 +21,7 @@ Group Financial Data Processing assignment.
   - Test to verify the accuracy of transaction statistics in `update_transaction_statistics`.
   - Test to calculate and verify average transaction amounts for deposits and withdrawals in `get_average_transaction_amount`.
 - Ensured all tests pass and the code adheres to project standards.
-## Developer 3 Tasks (Issue 3):
-
+## Developer 3 Tasks (Issue 3): Added Documentation and Tests for OutputHandler class
 # Milestone 2
 ## Developer 1 Tasks (Issue 4):
 ## Developer 2 Tasks (Issue 5):
